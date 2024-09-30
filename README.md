@@ -18,8 +18,8 @@ This repo is proudly sponsored by:
 ## Installation
 
 ```js
-npm install react-native-map-clustering react-native-maps --save
-// yarn add react-native-map-clustering react-native-maps
+yarn add @emperorschildren/react-native-map-clustering
+// npm install @emperorschildren/react-native-map-clustering --save
 ```
 
 ### Full example

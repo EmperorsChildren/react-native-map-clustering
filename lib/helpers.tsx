@@ -1,4 +1,4 @@
-import GeoViewport from "@mapbox/geo-viewport";
+import GeoViewport from "@placemarkio/geo-viewport";
 import { Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("window");
@@ -128,3 +128,12 @@ const _removeChildrenFromProps = (props) => {
   });
   return newProps;
 };
+
+export const getCenterOffsetForAnchor = (
+  anchor,
+  markerWidth,
+  markerHeight
+) => ({
+  x: markerWidth * 0.5 - markerWidth * anchor.x,
+  y: markerHeight * 0.5 - markerHeight * anchor.y,
+});

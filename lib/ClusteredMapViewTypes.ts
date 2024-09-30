@@ -20,6 +20,7 @@ export interface MapClusteringProps {
   edgePadding?: { top: number; left: number; right: number; bottom: number };
   clusterColor?: string;
   clusterTextColor?: string;
+  clusterOuterColor?: string;
   clusterFontFamily?: string;
   selectedClusterId?: string;
   selectedClusterColor?: string;

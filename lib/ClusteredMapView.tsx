@@ -6,7 +6,7 @@ import React, {
   useRef,
   useState,
 } from "react";
-import { Dimensions, LayoutAnimation, Platform } from "react-native";
+import { Dimensions, LayoutAnimation, Platform, UIManager } from "react-native";
 import MapView, { MapViewProps, Polyline } from "react-native-maps";
 import SuperCluster from "supercluster";
 
@@ -19,6 +19,16 @@ import {
   markerToGeoJSONFeature,
   returnMapZoom,
 } from "./helpers";
+
+// https://reactnative.dev/docs/0.74/layoutanimation
+if (
+  Platform.OS === "android" &&
+  UIManager.setLayoutAnimationEnabledExperimental
+) {
+  UIManager.setLayoutAnimationEnabledExperimental(true);
+}
+
+const emptyArray = [];
 
 const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
   (
@@ -50,9 +60,9 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
     },
     ref
   ) => {
-    const [markers, updateMarkers] = useState([]);
-    const [spiderMarkers, updateSpiderMarker] = useState([]);
-    const [otherChildren, updateChildren] = useState([]);
+    const [markers, updateMarkers] = useState(emptyArray);
+    const [spiderMarkers, updateSpiderMarker] = useState(emptyArray);
+    const [otherChildren, updateChildren] = useState(emptyArray);
     const [superCluster, setSuperCluster] = useState(null);
     const [currentRegion, updateRegion] = useState(
       restProps.region || restProps.initialRegion
@@ -72,8 +82,8 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       const otherChildren = [];
 
       if (!clusteringEnabled) {
-        updateSpiderMarker([]);
-        updateMarkers([]);
+        updateSpiderMarker(emptyArray);
+        updateMarkers(emptyArray);
         updateChildren(propsChildren);
         setSuperCluster(null);
         return;
@@ -130,7 +140,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
         updateSpiderMarker(allSpiderMarkers);
       } else {
-        updateSpiderMarker([]);
+        updateSpiderMarker(emptyArray);
       }
     }, [isSpiderfier, markers]);
 
@@ -139,28 +149,9 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         const bBox = calculateBBox(region);
         const zoom = returnMapZoom(region, bBox, minZoom);
         const markers = superCluster.getClusters(bBox, zoom);
-
-        /* TODO a valider si ca marche encore
-        
-         https://github.com/venits/react-native-map-clustering/pull/258
-         > On iOS, app freezes when used with modal.
-         > So I think it's better to turn off this function on Google Maps.
-         > Because LayoutAnimation in this library only works on Apple Maps.
-         >
-         > Related to #257 https://github.com/venits/react-native-map-clustering/issues/257
-          
-         workaround: restProps.provider !== "google"
-        */
-
-        // if (
-        //   animationEnabled &&
-        //   Platform.OS === "ios" &&
-        //   restProps.provider !== "google"
-        // ) {
         if (animationEnabled) {
           LayoutAnimation.configureNext(layoutAnimationConf);
         }
-
         if (
           zoom >= restProps.maxZoom - 2 &&
           markers.length > 0 &&
