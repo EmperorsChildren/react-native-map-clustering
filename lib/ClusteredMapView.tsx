@@ -48,14 +48,14 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
       superClusterRef,
       ...restProps
     },
-    ref,
+    ref
   ) => {
     const [markers, updateMarkers] = useState([]);
     const [spiderMarkers, updateSpiderMarker] = useState([]);
     const [otherChildren, updateChildren] = useState([]);
     const [superCluster, setSuperCluster] = useState(null);
     const [currentRegion, updateRegion] = useState(
-      restProps.region || restProps.initialRegion,
+      restProps.region || restProps.initialRegion
     );
 
     const [isSpiderfier, updateSpiderfier] = useState(false);
@@ -64,7 +64,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
     const propsChildren = useMemo(
       () => React.Children.toArray(children),
-      [children],
+      [children]
     );
 
     useEffect(() => {
@@ -121,7 +121,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           if (marker.properties.cluster) {
             spiralChildren = superCluster.getLeaves(
               marker.properties.cluster_id,
-              Infinity,
+              Infinity
             );
           }
           const positions = generateSpiral(marker, spiralChildren, markers, i);
@@ -239,7 +239,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
                 tracksViewChanges={tracksViewChanges}
               />
             )
-          ) : null,
+          ) : null
         )}
         {otherChildren}
         {spiderMarkers.map((marker) => {
@@ -259,7 +259,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
         ))}
       </MapView>
     );
-  },
+  }
 );
 
 ClusteredMapView.defaultProps = {

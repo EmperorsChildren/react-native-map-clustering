@@ -27,9 +27,12 @@ declare module "@emperorschildren/react-native-map-clustering" {
     spiderLineColor?: string;
     superClusterRef?: React.MutableRefObject<any>;
     mapRef?: (ref: React.Ref<Map>) => void;
-    onClusterPress?: (cluster: Marker, markers?: Marker[]) => void;
+    onClusterPress?: (
+      cluster: typeof Marker,
+      markers?: (typeof Marker)[]
+    ) => void;
     getClusterEngine?: (ref: any) => void;
-    onMarkersChange?: (markers?: Marker[]) => void;
+    onMarkersChange?: (markers?: (typeof Marker)[]) => void;
     renderCluster?: (cluster: any) => React.ReactNode;
   }
 

@@ -28,7 +28,7 @@ export interface MapClusteringProps {
   mapRef?: (ref: React.Ref<Map>) => void;
   onClusterPress?: (
     cluster: typeof Marker,
-    markers?: (typeof Marker)[],
+    markers?: (typeof Marker)[]
   ) => void;
   getClusterEngine?: (ref: any) => void;
   onMarkersChange?: (markers?: (typeof Marker)[]) => void;
