@@ -1,24 +1,26 @@
 import React, {
+  forwardRef,
   memo,
-  useState,
   useEffect,
   useMemo,
   useRef,
-  forwardRef,
+  useState,
 } from "react";
 import { Dimensions, LayoutAnimation, Platform } from "react-native";
-import MapView, { Marker, Polyline } from "react-native-maps";
+import MapView, { MapViewProps, Polyline } from "react-native-maps";
 import SuperCluster from "supercluster";
+
+import { MapClusteringProps } from "./ClusteredMapViewTypes";
 import ClusterMarker from "./ClusteredMarker";
 import {
+  calculateBBox,
+  generateSpiral,
   isMarker,
   markerToGeoJSONFeature,
-  calculateBBox,
   returnMapZoom,
-  generateSpiral,
 } from "./helpers";
 
-const ClusteredMapView = forwardRef(
+const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
   (
     {
       radius,
@@ -35,6 +37,7 @@ const ClusteredMapView = forwardRef(
       clusteringEnabled,
       clusterColor,
       clusterTextColor,
+      clusterOuterColor,
       clusterFontFamily,
       spiderLineColor,
       layoutAnimationConf,
@@ -45,23 +48,24 @@ const ClusteredMapView = forwardRef(
       superClusterRef,
       ...restProps
     },
-    ref
+    ref,
   ) => {
     const [markers, updateMarkers] = useState([]);
     const [spiderMarkers, updateSpiderMarker] = useState([]);
     const [otherChildren, updateChildren] = useState([]);
     const [superCluster, setSuperCluster] = useState(null);
     const [currentRegion, updateRegion] = useState(
-      restProps.region || restProps.initialRegion
+      restProps.region || restProps.initialRegion,
     );
 
     const [isSpiderfier, updateSpiderfier] = useState(false);
     const [clusterChildren, updateClusterChildren] = useState(null);
     const mapRef = useRef();
 
-    const propsChildren = useMemo(() => React.Children.toArray(children), [
-      children,
-    ]);
+    const propsChildren = useMemo(
+      () => React.Children.toArray(children),
+      [children],
+    );
 
     useEffect(() => {
       const rawData = [];
@@ -106,19 +110,21 @@ const ClusteredMapView = forwardRef(
     }, [propsChildren, clusteringEnabled]);
 
     useEffect(() => {
-      if (!spiralEnabled) return;
+      if (!spiralEnabled) {
+        return;
+      }
 
       if (isSpiderfier && markers.length > 0) {
-        let allSpiderMarkers = [];
+        const allSpiderMarkers = [];
         let spiralChildren = [];
         markers.map((marker, i) => {
           if (marker.properties.cluster) {
             spiralChildren = superCluster.getLeaves(
               marker.properties.cluster_id,
-              Infinity
+              Infinity,
             );
           }
-          let positions = generateSpiral(marker, spiralChildren, markers, i);
+          const positions = generateSpiral(marker, spiralChildren, markers, i);
           allSpiderMarkers.push(...positions);
         });
 
@@ -128,25 +134,46 @@ const ClusteredMapView = forwardRef(
       }
     }, [isSpiderfier, markers]);
 
-    const _onRegionChangeComplete = (region) => {
+    const _onRegionChangeComplete = (region, details) => {
       if (superCluster && region) {
         const bBox = calculateBBox(region);
         const zoom = returnMapZoom(region, bBox, minZoom);
         const markers = superCluster.getClusters(bBox, zoom);
-        if (animationEnabled && Platform.OS === "ios") {
+
+        /* TODO a valider si ca marche encore
+        
+         https://github.com/venits/react-native-map-clustering/pull/258
+         > On iOS, app freezes when used with modal.
+         > So I think it's better to turn off this function on Google Maps.
+         > Because LayoutAnimation in this library only works on Apple Maps.
+         >
+         > Related to #257 https://github.com/venits/react-native-map-clustering/issues/257
+          
+         workaround: restProps.provider !== "google"
+        */
+
+        if (
+          animationEnabled &&
+          Platform.OS === "ios" /*&& restProps.provider !== "google"*/
+        ) {
           LayoutAnimation.configureNext(layoutAnimationConf);
         }
+
         if (zoom >= 18 && markers.length > 0 && clusterChildren) {
-          if (spiralEnabled) updateSpiderfier(true);
+          if (spiralEnabled) {
+            updateSpiderfier(true);
+          }
         } else {
-          if (spiralEnabled) updateSpiderfier(false);
+          if (spiralEnabled) {
+            updateSpiderfier(false);
+          }
         }
         updateMarkers(markers);
         onMarkersChange(markers);
-        onRegionChangeComplete(region, markers);
+        onRegionChangeComplete(region, details, markers);
         updateRegion(region);
       } else {
-        onRegionChangeComplete(region);
+        onRegionChangeComplete(region, details);
       }
     };
 
@@ -176,7 +203,9 @@ const ClusteredMapView = forwardRef(
         {...restProps}
         ref={(map) => {
           mapRef.current = map;
-          if (ref) ref.current = map;
+          if (ref) {
+            ref.current = map;
+          }
           restProps.mapRef(map);
         }}
         onRegionChangeComplete={_onRegionChangeComplete}
@@ -190,6 +219,7 @@ const ClusteredMapView = forwardRef(
                 onPress: _onClusterPress(marker),
                 clusterColor,
                 clusterTextColor,
+                clusterOuterColor,
                 clusterFontFamily,
                 ...marker,
               })
@@ -204,11 +234,12 @@ const ClusteredMapView = forwardRef(
                     : clusterColor
                 }
                 clusterTextColor={clusterTextColor}
+                clusterOuterColor={clusterOuterColor}
                 clusterFontFamily={clusterFontFamily}
                 tracksViewChanges={tracksViewChanges}
               />
             )
-          ) : null
+          ) : null,
         )}
         {otherChildren}
         {spiderMarkers.map((marker) => {
@@ -228,7 +259,7 @@ const ClusteredMapView = forwardRef(
         ))}
       </MapView>
     );
-  }
+  },
 );
 
 ClusteredMapView.defaultProps = {

@@ -1,6 +1,7 @@
 import React, { memo } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Marker } from "react-native-maps";
+
 import { returnMarkerStyle } from "./helpers";
 
 const ClusteredMarker = ({
@@ -9,6 +10,7 @@ const ClusteredMarker = ({
   onPress,
   clusterColor,
   clusterTextColor,
+  clusterOuterColor,
   clusterFontFamily,
   tracksViewChanges,
 }) => {
@@ -34,7 +36,7 @@ const ClusteredMarker = ({
           style={[
             styles.wrapper,
             {
-              backgroundColor: clusterColor,
+              backgroundColor: clusterOuterColor || clusterColor,
               width,
               height,
               borderRadius: width / 2,
@@ -78,7 +80,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     position: "absolute",
-    opacity: 0.5,
     zIndex: 0,
   },
   cluster: {
