@@ -1,6 +1,6 @@
 {
-  "name": "react-native-map-clustering",
-  "version": "3.4.2",
+  "name": "@emperorschildren/react-native-map-clustering",
+  "version": "0.0.3",
   "description": "React Native Map Clustering both for Android and iOS",
   "types": "index.d.ts",
   "main": "index.js",
@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/venits/react-native-map-clustering.git"
+    "url": "git+https://github.com/EmperorsChildren/react-native-map-clustering.git"
   },
   "keywords": [
     "react-native",
@@ -20,18 +20,26 @@
     "map",
     "clustering"
   ],
-  "author": "Venits",
+  "author": "EmperorsChildren",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/venits/react-native-map-clustering/issues"
+    "url": "https://github.com/EmperorsChildren/react-native-map-clustering/issues"
   },
-  "homepage": "https://github.com/venits/react-native-map-clustering#readme",
+  "homepage": "https://github.com/EmperorsChildren/react-native-map-clustering#readme",
   "dependencies": {
-    "supercluster": "^7.1.0",
-    "@mapbox/geo-viewport": "^0.4.1"
+    "@placemarkio/geo-viewport": "^1.0.2",
+    "supercluster": "^8.0.1"
   },
   "peerDependencies": {
-    "react-native-maps": "*",
-    "react-native": "*"
+    "react-native": ">=0.74.5",
+    "react-native-maps": ">=1.14.0"
+  },
+  "packageManager": "yarn@4.5.0",
+  "devDependencies": {
+    "@types/react": "^18.3.10",
+    "@types/supercluster": "^7.1.3",
+    "react": "18.2.0",
+    "react-native": "0.74.5",
+    "react-native-maps": "1.14.0"
   }
 }

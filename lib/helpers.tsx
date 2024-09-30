@@ -1,9 +1,9 @@
-import GeoViewport from "@mapbox/geo-viewport";
+import GeoViewport from "@placemarkio/geo-viewport";
 import { Dimensions } from "react-native";
 
 const { width, height } = Dimensions.get("window");
 
-export const isMarker = (child) =>
+export const isMarker = (child: JSX.Element): boolean =>
   child &&
   child.props &&
   child.props.coordinate &&
@@ -54,7 +54,7 @@ export const generateSpiral = (marker, clusterChildren, markers, index) => {
   const count = properties.point_count;
   const centerLocation = geometry.coordinates;
 
-  let res = [];
+  const res = [];
   let angle = 0;
   let start = 0;
 
@@ -64,8 +64,8 @@ export const generateSpiral = (marker, clusterChildren, markers, index) => {
 
   for (let i = 0; i < count; i++) {
     angle = 0.25 * (i * 0.5);
-    let latitude = centerLocation[1] + 0.0002 * angle * Math.cos(angle);
-    let longitude = centerLocation[0] + 0.0002 * angle * Math.sin(angle);
+    const latitude = centerLocation[1] + 0.0002 * angle * Math.cos(angle);
+    const longitude = centerLocation[0] + 0.0002 * angle * Math.sin(angle);
 
     if (clusterChildren[i + start]) {
       res.push({
@@ -84,65 +84,38 @@ export const generateSpiral = (marker, clusterChildren, markers, index) => {
 };
 
 export const returnMarkerStyle = (points) => {
-  if (points >= 50) {
+  if (points >= 1000) {
     return {
-      width: 84,
-      height: 84,
-      size: 64,
-      fontSize: 20,
+      width: 45,
+      height: 45,
+      size: 36,
+      fontSize: 14,
     };
   }
 
-  if (points >= 25) {
+  if (points >= 100) {
     return {
-      width: 78,
-      height: 78,
-      size: 58,
-      fontSize: 19,
-    };
-  }
-
-  if (points >= 15) {
-    return {
-      width: 72,
-      height: 72,
-      size: 54,
-      fontSize: 18,
+      width: 40,
+      height: 40,
+      size: 32,
+      fontSize: 14,
     };
   }
 
   if (points >= 10) {
     return {
-      width: 66,
-      height: 66,
-      size: 50,
-      fontSize: 17,
-    };
-  }
-
-  if (points >= 8) {
-    return {
-      width: 60,
-      height: 60,
-      size: 46,
-      fontSize: 17,
-    };
-  }
-
-  if (points >= 4) {
-    return {
-      width: 54,
-      height: 54,
-      size: 40,
-      fontSize: 16,
+      width: 36,
+      height: 36,
+      size: 28,
+      fontSize: 14,
     };
   }
 
   return {
-    width: 48,
-    height: 48,
-    size: 36,
-    fontSize: 15,
+    width: 30,
+    height: 30,
+    size: 22,
+    fontSize: 14,
   };
 };
 
@@ -155,3 +128,12 @@ const _removeChildrenFromProps = (props) => {
   });
   return newProps;
 };
+
+export const getCenterOffsetForAnchor = (
+  anchor,
+  markerWidth,
+  markerHeight
+) => ({
+  x: markerWidth * 0.5 - markerWidth * anchor.x,
+  y: markerHeight * 0.5 - markerHeight * anchor.y,
+});

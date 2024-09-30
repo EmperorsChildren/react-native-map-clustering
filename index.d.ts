@@ -1,4 +1,4 @@
-declare module "react-native-map-clustering" {
+declare module "@emperorschildren/react-native-map-clustering" {
   import * as React from "react";
   import { LayoutAnimationConfig } from "react-native";
   import Map, { MapViewProps, Marker } from "react-native-maps";
@@ -21,15 +21,19 @@ declare module "react-native-map-clustering" {
     edgePadding?: { top: number; left: number; right: number; bottom: number };
     clusterColor?: string;
     clusterTextColor?: string;
+    clusterOuterColor?: string;
     clusterFontFamily?: string;
     selectedClusterId?: string;
     selectedClusterColor?: string;
     spiderLineColor?: string;
     superClusterRef?: React.MutableRefObject<any>;
     mapRef?: (ref: React.Ref<Map>) => void;
-    onClusterPress?: (cluster: Marker, markers?: Marker[]) => void;
+    onClusterPress?: (
+      cluster: typeof Marker,
+      markers?: (typeof Marker)[]
+    ) => void;
     getClusterEngine?: (ref: any) => void;
-    onMarkersChange?: (markers?: Marker[]) => void;
+    onMarkersChange?: (markers?: (typeof Marker)[]) => void;
     renderCluster?: (cluster: any) => React.ReactNode;
   }
 

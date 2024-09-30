@@ -1,7 +1,8 @@
 import React, { memo } from "react";
-import { Text, View, StyleSheet, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { Marker } from "react-native-maps";
-import { returnMarkerStyle } from "./helpers";
+
+import { getCenterOffsetForAnchor, returnMarkerStyle } from "./helpers";
 
 const ClusteredMarker = ({
   geometry,
@@ -9,6 +10,7 @@ const ClusteredMarker = ({
   onPress,
   clusterColor,
   clusterTextColor,
+  clusterOuterColor,
   clusterFontFamily,
   tracksViewChanges,
 }) => {
@@ -17,6 +19,8 @@ const ClusteredMarker = ({
 
   return (
     <Marker
+      // anchor={{ x: 0.5, y: 0.5 }}
+      // centerOffset={getCenterOffsetForAnchor({ x: 0.5, y: 0.5 }, width, height)}
       key={`${geometry.coordinates[0]}_${geometry.coordinates[1]}`}
       coordinate={{
         longitude: geometry.coordinates[0],
@@ -34,7 +38,7 @@ const ClusteredMarker = ({
           style={[
             styles.wrapper,
             {
-              backgroundColor: clusterColor,
+              backgroundColor: clusterOuterColor || clusterColor,
               width,
               height,
               borderRadius: width / 2,
@@ -78,7 +82,6 @@ const styles = StyleSheet.create({
   },
   wrapper: {
     position: "absolute",
-    opacity: 0.5,
     zIndex: 0,
   },
   cluster: {
