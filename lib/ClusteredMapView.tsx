@@ -190,6 +190,7 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
 
       mapRef.current.fitToCoordinates(coordinates, {
         edgePadding: restProps.edgePadding,
+        duration: 750,
       });
 
       onClusterPress(cluster, children);
