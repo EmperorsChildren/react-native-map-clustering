@@ -152,10 +152,12 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
          workaround: restProps.provider !== "google"
         */
 
-        if (
-          animationEnabled &&
-          Platform.OS === "ios" /*&& restProps.provider !== "google"*/
-        ) {
+        // if (
+        //   animationEnabled &&
+        //   Platform.OS === "ios" &&
+        //   restProps.provider !== "google"
+        // ) {
+        if (animationEnabled) {
           LayoutAnimation.configureNext(layoutAnimationConf);
         }
 
