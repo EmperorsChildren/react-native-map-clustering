@@ -161,7 +161,11 @@ const ClusteredMapView = forwardRef<MapClusteringProps & MapViewProps, any>(
           LayoutAnimation.configureNext(layoutAnimationConf);
         }
 
-        if (zoom >= 18 && markers.length > 0 && clusterChildren) {
+        if (
+          zoom >= restProps.maxZoom - 2 &&
+          markers.length > 0 &&
+          clusterChildren
+        ) {
           if (spiralEnabled) {
             updateSpiderfier(true);
           }
